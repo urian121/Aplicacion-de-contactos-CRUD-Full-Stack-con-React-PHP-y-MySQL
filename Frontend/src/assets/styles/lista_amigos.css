@@ -1,0 +1,25 @@
+img {
+  border-radius: 10px;
+}
+.media {
+  background-color: #fff;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes hoverTransiton {
+  50% {
+    transform: scale(1.03);
+  }
+}
+.media:hover {
+  cursor: pointer;
+  animation-name: hoverTransiton;
+  animation-duration: 0.5s;
+}
+.contenedor_amigos {
+  width: 500px;
+  height: 400px;
+  overflow-x: auto;
+}
