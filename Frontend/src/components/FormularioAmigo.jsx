@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import Titulo from "./Titulo";
 import ListaAmigos from "./ListaAmigos";
+import Titulo from "./Titulo";
 
 /** Alertas con React Toastify */
 import { ToastContainer, toast } from "react-toastify";
@@ -11,7 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 const URL_API =
   "http://localhost/crud-full-stack-agenda-de-contactos-con-react-php-mysql/Backend-php/";
 
-const Formulario = () => {
+const FormularioAmigo = () => {
   const [amigos, setAmigos] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -22,11 +22,7 @@ const Formulario = () => {
   });
 
   const manejarCambioInput = (e) => {
-    /*
-    console.log(e.target);
     console.log(e.target.name, e.target.value);
-    */
-
     setDatos({
       ...datos,
       [e.target.name]: e.target.value,
@@ -34,14 +30,15 @@ const Formulario = () => {
   };
 
   /**
-   * La función handleSubirImagen captura el primer archivo seleccionado por el usuario desde un campo de entrada de archivos y lo establece como el archivo seleccionado en el estado del componente.
+   * La función handleSubirImagen captura el primer archivo seleccionado por el usuario desde un campo de entrada de
+   * archivos y lo establece como el archivo seleccionado en el estado del componente.
    */
   const handleSubirImagen = (event) => {
     setSelectedFile(event.target.files[0]);
   };
 
   const manejarEnvioFormulario = async (e) => {
-    e.preventDefault(); // Evita que se recargue la página al enviar el formulario
+    e.preventDefault();
 
     // Crear una copia de los datos del formulario
     const datosConImagen = { ...datos };
@@ -73,7 +70,7 @@ const Formulario = () => {
           telefono: "",
         });
 
-        obtenerAlumnos();
+        obtenerContactos();
       } catch (error) {
         console.error("Error al agregar alumno:", error);
       }
@@ -85,10 +82,10 @@ const Formulario = () => {
 
   useEffect(() => {
     // Obtener lista de alumnos al cargar la página
-    obtenerAlumnos();
+    obtenerContactos();
   }, []);
 
-  const obtenerAlumnos = async () => {
+  const obtenerContactos = async () => {
     try {
       const response = await axios.get(URL_API);
       setAmigos(response.data);
@@ -97,12 +94,28 @@ const Formulario = () => {
     }
   };
 
+  const eliminarContacto = async (id) => {
+    try {
+      const response = await axios.delete(`${URL_API}/?id=${id}`);
+      console.log("Alumno eliminado:", response.data);
+      toast.error("Alumno eliminado correctamente.");
+      // Actualizar la lista de acontactos
+      obtenerContactos();
+    } catch (error) {
+      console.error("Error al eliminar alumno:", error);
+    }
+  };
+
   return (
     <div className="row justify-content-md-center">
       <Titulo />
       <ToastContainer />
       <div className="col-md-7">
-        <ListaAmigos data={amigos} url_api={URL_API} />
+        <ListaAmigos
+          data={amigos}
+          url_api={URL_API}
+          eliminarContacto={eliminarContacto}
+        />
       </div>
 
       <div className="col-md-5">
@@ -140,7 +153,7 @@ const Formulario = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="formFileSm" className="form-label">
+            <label htmlFor="avatar" className="form-label">
               Avatar
             </label>
             <input
@@ -164,4 +177,4 @@ const Formulario = () => {
   );
 };
 
-export default Formulario;
+export default FormularioAmigo;

@@ -112,14 +112,30 @@ switch ($metodo) {
 
     case 'DELETE':
         $id = $_GET['id'];
-        // Eliminar un amigo
-        $query = "DELETE FROM $tbl_alumnos WHERE id=$id";
-        if (mysqli_query($con, $query)) {
+
+        // Obtener el nombre del archivo de imagen asociado al contacto
+        $query = "SELECT avatar FROM $tbl_alumnos WHERE id=$id";
+        $result = mysqli_query($con, $query);
+        $row = mysqli_fetch_assoc($result);
+        $avatarName = $row['avatar'];
+
+        // Eliminar la entrada del contacto de la base de datos
+        $deleteQuery = "DELETE FROM $tbl_alumnos WHERE id=$id";
+        if (mysqli_query($con, $deleteQuery)) {
+            // Eliminar el archivo de imagen si existe
+            if ($avatarName) {
+                $filePath = $dirLocal . '/' . $avatarName;
+                if (file_exists($filePath)) {
+                    unlink($filePath); // Eliminar el archivo de imagen
+                }
+            }
+
             echo json_encode(array('message' => 'Amigo eliminado correctamente'));
         } else {
             echo json_encode(array('error' => 'Error al eliminar amigo: ' . mysqli_error($con)));
         }
         break;
+
 
     default:
         echo json_encode(array('error' => 'Método no permitido'));

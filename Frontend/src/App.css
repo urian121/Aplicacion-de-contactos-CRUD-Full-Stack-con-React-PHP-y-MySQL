@@ -38,6 +38,26 @@ hr {
   display: flex;
   justify-content: space-around;
 }
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.opacity {
+  opacity: 0.5;
+}
+.bi-trash3 {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+}
+.bi-trash3:hover {
+  color: red;
+}
+.bi-pen {
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+}
 .titulo {
   color: #333;
   font-weight: 800;
