@@ -1,8 +1,8 @@
 <?php
-/*
+
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-*/
+
 
 /**
  * Creando una API RESTful con los métodos GET, POST, PUT y DELETE utilizando PHP y MySQLi
@@ -87,27 +87,34 @@ switch ($metodo) {
         break;
 
     case 'PUT':
+        print_r($_POST);
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'];
-        $nombre_alumno = mysqli_real_escape_string($con, $data['nombre_alumno']);
-        $email_alumno = mysqli_real_escape_string($con, $data['email_alumno']);
-        $curso_alumno = mysqli_real_escape_string($con, $data['curso_alumno']);
-        $sexo_alumno = mysqli_real_escape_string($con, $data['sexo_alumno']);
-        $habla_ingles = mysqli_real_escape_string($con, $data['habla_ingles']);
+        $nombre = mysqli_real_escape_string($con, $data['nombre']);
+        $email = mysqli_real_escape_string($con, $data['email']);
+        $telefono = mysqli_real_escape_string($con, $data['telefono']);
+        print('nombre: ' . $nombre . ' email: ' . $email . ' telefono: ' . $telefono);
 
-        if ($habla_ingles == "true") {
-            $habla_ingles = 1;
-        } else {
-            $habla_ingles = 0;
-        }
+        $archivoTemporal = $_FILES['avatar']['tmp_name'];
+        $nombreArchivo = $_FILES['avatar']['name'];
+        print_r($archivoTemporal);
+        print_r($nombreArchivo);
+        echo '<br>';
 
+        $nombre = $_POST['nombre'];
+        $email = $_POST['email'];
+        $telefono = $_POST['telefono'];
+        print_r($nombre);
+        print_r($email);
+        print_r($telefono);
 
-        $query = "UPDATE $tbl_alumnos SET nombre_alumno='$nombre_alumno', email_alumno='$email_alumno', curso_alumno='$curso_alumno', sexo_alumno='$sexo_alumno', habla_ingles='$habla_ingles' WHERE id=$id";
+        /*
+        $query = "UPDATE $tbl_alumnos SET nombre='$nombre', email='$email', telefono='$telefono' WHERE id=$id";
         if (mysqli_query($con, $query)) {
-            echo json_encode(array('message' => 'Usuario actualizado correctamente'));
+            echo json_encode(array('message' => 'Contacto actualizado correctamente'));
         } else {
-            echo json_encode(array('error' => 'Error al actualizar amigo: ' . mysqli_error($con)));
-        }
+            echo json_encode(array('error' => 'Error al actualizar contacto: ' . mysqli_error($con)));
+        }*/
         break;
 
     case 'DELETE':

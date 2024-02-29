@@ -1,7 +1,12 @@
 import PropTypes from "prop-types";
 import "../assets/styles/lista_amigos.css";
 
-function ListaAmigos({ data, url_api, eliminarContacto }) {
+function ListaAmigos({
+  data,
+  url_api,
+  eliminarContacto,
+  obtenerContactoParaEditar,
+}) {
   // Verifica si data es null o undefined antes de usarla
   if (!data) return null;
   return (
@@ -30,10 +35,15 @@ function ListaAmigos({ data, url_api, eliminarContacto }) {
                 <p>
                   <span> {amigo.email}</span>
                   <span style={{ float: "right" }}>
-                    <span className="px-4">
+                    <span
+                      title={`Editar amigo ${amigo.nombre}`}
+                      className="px-4"
+                      onClick={() => obtenerContactoParaEditar(amigo.id)}>
                       <i className="bi bi-pen"></i>
                     </span>
-                    <span onClick={() => eliminarContacto(amigo.id)}>
+                    <span
+                      title="Eliminar amigo"
+                      onClick={() => eliminarContacto(amigo.id)}>
                       <i className="bi bi-trash3"></i>
                     </span>
                   </span>
@@ -49,6 +59,7 @@ function ListaAmigos({ data, url_api, eliminarContacto }) {
 
 // Define la validación de tipo para la prop 'data'
 ListaAmigos.propTypes = {
+  obtenerContactoParaEditar: PropTypes.func,
   eliminarContacto: PropTypes.func,
   url_api: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object), // 'data' debe ser un array de objetos

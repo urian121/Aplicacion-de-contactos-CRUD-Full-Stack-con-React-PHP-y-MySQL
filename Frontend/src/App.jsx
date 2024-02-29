@@ -1,10 +1,10 @@
 import "./App.css";
-import FormularioAmigo from "./components/FormularioAmigo";
+import HomePage from "./components/HomePage";
 
 function App() {
   return (
     <>
-      <FormularioAmigo />
+      <HomePage />
     </>
   );
 }
