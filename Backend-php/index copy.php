@@ -1,8 +1,4 @@
 <?php
-/*
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-*/
 
 /**
  * Creando una API RESTful con los métodos GET, POST, PUT y DELETE utilizando PHP y MySQLi
@@ -17,8 +13,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 require('configBD.php');
 $metodo = $_SERVER['REQUEST_METHOD'];
 $tbl_alumnos = 'tbl_amigos';
-$dirLocal = "fotos_amigos";
-$extensionesPermitidas = array("jpg", "jpeg", "png", "gif");
+
 
 switch ($metodo) {
     case 'GET':
@@ -52,37 +47,27 @@ switch ($metodo) {
         break;
 
     case 'POST':
-        // Verificar si se ha enviado un archivo
-        if (isset($_FILES['avatar'])) {
-            $archivoTemporal = $_FILES['avatar']['tmp_name'];
-            $nombreArchivo = $_FILES['avatar']['name'];
+        $data = json_decode(file_get_contents("php://input"), true);
+        $nombre = mysqli_real_escape_string($con, ucwords($data['nombre']));
+        $email = mysqli_real_escape_string($con, $data['email']);
+        $telefono = mysqli_real_escape_string($con, $data['telefono']);
 
-            $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
 
-            if (in_array($extension, $extensionesPermitidas)) {
-                // Generar un nombre único y seguro para el archivo
-                $nombreArchivo = substr(md5(uniqid(rand())), 0, 10) . "." . $extension;
-                $rutaDestino = $dirLocal . '/' . $nombreArchivo;
+        //Verificando si existe el directorio
+        $dirLocal = "fotos_amigos";
+        if (!file_exists($dirLocal)) {
+            mkdir($dirLocal, 0777, true);
+        }
+        $miDir         = opendir($dirLocal); //Habro el directorio
 
-                // Mover el archivo a la ubicación deseada
-                if (move_uploaded_file($archivoTemporal, $rutaDestino)) {
-                    $nombre = $_POST['nombre'];
-                    $email = $_POST['email'];
-                    $telefono = $_POST['telefono'];
-                    $query = "INSERT INTO $tbl_alumnos (nombre, email, telefono, avatar) VALUES ('$nombre', '$email', '$telefono', '$nombreArchivo')";
-                    if (mysqli_query($con, $query)) {
-                        echo json_encode(array('message' => 'Nuevo amigo creado correctamente'));
-                    } else {
-                        echo json_encode(array('error' => 'Error al crear amigo: ' . mysqli_error($con)));
-                    }
-                } else {
-                    echo json_encode(array('error' => 'Error al mover el archivo'));
-                }
-            } else {
-                echo json_encode(array('error' => 'Tipo de archivo no permitido'));
-            }
+        //move_uploaded_file($_FILES['file']['tmp_name'], 'archivos/' . $_FILES['file']['name']);
+
+
+        $query = "INSERT INTO $tbl_alumnos (nombre, email, telefono) VALUES ('$nombre', '$email', '$telefono')";
+        if (mysqli_query($con, $query)) {
+            echo json_encode(array('message' => 'Nuevo amigo creado correctamente'));
         } else {
-            echo json_encode(array('error' => 'No se ha enviado ningún archivo o ha ocurrido un error al cargar el archivo'));
+            echo json_encode(array('error' => 'Error al crear amigo: ' . mysqli_error($con)));
         }
         break;
 

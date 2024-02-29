@@ -1,25 +1,71 @@
-img {
-  border-radius: 10px;
+.media-list {
+  background-color: #333;
+  display: inline-block;
+  text-align: left;
+  width: 100%;
+}
+ul {
+  padding: 20px 20px 0;
+  height: 450px;
+  overflow-y: auto;
+
+  list-style: none;
 }
 .media {
-  background-color: #fff;
-  border: 1px solid #e6ebf2;
-  border-radius: 10px;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-}
-
-@keyframes hoverTransiton {
-  50% {
-    transform: scale(1.03);
-  }
+  display: block;
+  padding: 10px 0px;
+  width: 100%;
+  border-bottom: 1px dotted #555;
+  color: #fff;
 }
 .media:hover {
+  transform: scale(1.05);
+  transition: transform ease 0.3s;
   cursor: pointer;
-  animation-name: hoverTransiton;
-  animation-duration: 0.5s;
 }
-.contenedor_amigos {
-  width: 500px;
-  height: 400px;
-  overflow-x: auto;
+
+.media::after {
+  clear: both;
+  content: "";
+  display: table;
+}
+
+.media__img,
+.media__img-reverse {
+  float: left;
+  display: block;
+  margin-right: 10px;
+}
+
+.media__img > img,
+.media__img-reverse > img {
+  background-color: #fff;
+  border-radius: 50%;
+  height: 60px;
+}
+
+.media__img-reverse {
+  float: right;
+}
+
+.media__body {
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+#buscador_amigo {
+  background-color: #e5e5e5;
+  background-size: 24px;
+  width: 100%;
+  border: transparent;
+  border-bottom: solid 1px #ccc;
+  padding: 10px 10px 10px 30px;
+  outline: none;
+}
+.mensaje {
+  text-align: center;
+  color: #222;
+  background-color: #fff3cd;
+  padding: 7px;
+  font-weight: 700;
 }

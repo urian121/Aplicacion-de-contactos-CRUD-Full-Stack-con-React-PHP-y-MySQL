@@ -17,8 +17,12 @@ label {
   justify-content: flex-start;
 }
 .btn_add {
-  border: 1px solid #06c046 !important;
-  background-color: #06c046 !important;
+  width: 100%;
+  border: 1px solid #333 !important;
+  background-color: #333 !important;
+}
+.btn_add:hover {
+  opacity: 0.8;
 }
 .btn-success {
   border: 1px solid #06c046 !important;

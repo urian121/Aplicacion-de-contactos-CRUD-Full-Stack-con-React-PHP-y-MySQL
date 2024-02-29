@@ -2,15 +2,18 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 import Titulo from "./Titulo";
-import GridIzquierdo from "./GridIzquierdo";
+import ListaAmigos from "./ListaAmigos";
 
 /** Alertas con React Toastify */
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const URL_API =
+  "http://localhost/crud-full-stack-agenda-de-contactos-con-react-php-mysql/Backend-php/";
+
 const Formulario = () => {
-  const URL_API = "http://localhost/backend-php/";
   const [amigos, setAmigos] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const [datos, setDatos] = useState({
     nombre: "",
@@ -30,18 +33,53 @@ const Formulario = () => {
     });
   };
 
+  /**
+   * La función handleSubirImagen captura el primer archivo seleccionado por el usuario desde un campo de entrada de archivos y lo establece como el archivo seleccionado en el estado del componente.
+   */
+  const handleSubirImagen = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
   const manejarEnvioFormulario = async (e) => {
     e.preventDefault(); // Evita que se recargue la página al enviar el formulario
-    console.log("Datos del formulario:", datos);
 
-    try {
-      const response = await axios.post(URL_API, datos);
-      toast.success("Alumno registrado correctamente.");
-      console.log("Alumno agregado:", response.data);
+    // Crear una copia de los datos del formulario
+    const datosConImagen = { ...datos };
 
-      //obtenerAlumnos();
-    } catch (error) {
-      console.error("Error al agregar alumno:", error);
+    // Agregar la imagen al objeto datos si existe
+    if (selectedFile) {
+      datosConImagen.avatar = selectedFile;
+    }
+
+    // Console.log solo para verificar los datos en el objeto datosConImagen
+    //console.log("Datos del formulario con imagen:", datosConImagen);
+
+    if (selectedFile) {
+      try {
+        const response = await axios.post(URL_API, datosConImagen, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        console.log("Respuesta del servidor:", response.data);
+        setSelectedFile(null);
+        toast.success("Imagen subida correctamente");
+
+        // Limpiar los campos del formulario después de enviar con éxito
+        setDatos({
+          nombre: "",
+          email: "",
+          telefono: "",
+        });
+
+        obtenerAlumnos();
+      } catch (error) {
+        console.error("Error al agregar alumno:", error);
+      }
+    } else {
+      console.log("No se ha seleccionado ningún archivo.");
+      toast.error("Debe seleccionar una imagen");
     }
   };
 
@@ -63,11 +101,11 @@ const Formulario = () => {
     <div className="row justify-content-md-center">
       <Titulo />
       <ToastContainer />
-      <div className="col-md-7 contenedor_amigos">
-        <GridIzquierdo data={amigos} />
+      <div className="col-md-7">
+        <ListaAmigos data={amigos} url_api={URL_API} />
       </div>
 
-      <div className="col-md-5 px-3">
+      <div className="col-md-5">
         <h2 className="text-center mb-3">Registrar Amigo</h2>
         <form
           className="px-5"
@@ -110,13 +148,13 @@ const Formulario = () => {
               id="formFileSm"
               type="file"
               name="avatar"
-              onChange={manejarCambioInput}
+              onChange={handleSubirImagen}
               accept="image/png, image/jpeg"
             />
           </div>
 
-          <div className="d-grid gap-2 col-6 mx-auto">
-            <button type="submit" className="btn btn-primary">
+          <div className="d-grid gap-2">
+            <button type="submit" className="btn btn-primary btn_add">
               Registrar Amigo
             </button>
           </div>
