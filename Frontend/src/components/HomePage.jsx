@@ -191,6 +191,18 @@ const HomePage = () => {
     }
   };
 
+  const volverHome = () => {
+    console.log("culoooo");
+    console.log(editarContacto);
+    setEditarContacto(false);
+    setSelectedFile(null);
+    setDatos({
+      nombre: "",
+      email: "",
+      telefono: "",
+    });
+  };
+
   return (
     <div className="row justify-content-md-center">
       <Titulo />
@@ -206,7 +218,17 @@ const HomePage = () => {
 
       <div className="col-md-5">
         <h2 className="text-center mb-3">
-          {editarContacto ? "Editar Contacto" : "Registrar Contacto"}
+          {editarContacto ? (
+            <>
+              <i
+                className="bi bi-arrow-left-circle"
+                onClick={volverHome}
+                style={{ cursor: "pointer", float: "left" }}></i>{" "}
+              Editar Contacto
+            </>
+          ) : (
+            "Registrar Contacto"
+          )}
         </h2>
 
         <FormularioRegistro

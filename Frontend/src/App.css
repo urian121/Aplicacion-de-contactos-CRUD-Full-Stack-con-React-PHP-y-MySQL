@@ -63,3 +63,6 @@ hr {
   font-weight: 800;
   font-size: 40px;
 }
+.bi-arrow-left-circle:hover {
+  color: #06c046;
+}
