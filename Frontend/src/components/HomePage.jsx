@@ -155,32 +155,44 @@ const HomePage = () => {
     // console.log("Recibiendo datos para actualizar el contacto", datos);
     const informData = { ...datos };
     let avatarBD = datos.avatar;
-    console.log(informData);
     try {
       if (avatarBD == selectedFile) {
         // La imagen es la misma que la imagen por defecto, por lo que no se actualiza
         delete datos.avatar;
-        console.log("caso 1", datos);
+        // console.log("caso 1", datos);
 
         const response = await axios.put(`${URL_API}${datos.id}`, datos);
         console.log("Respuesta del servidor:", response.data);
+        setSelectedFile(null);
+        toast.success("El contacto fue actualizado correctamente");
+
+        // Limpiar los campos del formulario después de enviar con éxito
+        setDatos({
+          nombre: "",
+          email: "",
+          telefono: "",
+        });
+
+        obtenerContactos();
       } else {
         // La imagen es diferente que la imagen por defecto, por lo que se actualiza
-        // La imagen ha sido cambiada, actualizarla
-        const formData = new FormData();
-        formData.append("id", datos.id);
-        formData.append("nombre", datos.nombre);
-        formData.append("email", datos.email);
-        formData.append("telefono", datos.telefono);
-        formData.append("avatar", selectedFile);
-
-        // console.log("caso 2", formData);
-        const response = await axios.put(`${URL_API}${datos.id}`, formData, {
+        informData.avatar = selectedFile;
+        await axios.post(`${URL_API}${datos.id}`, informData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
-        console.log("Respuesta del servidor:", response.data);
+        setSelectedFile(null);
+        toast.success("El contacto fue actualizado correctamente");
+
+        // Limpiar los campos del formulario después de enviar con éxito
+        setDatos({
+          nombre: "",
+          email: "",
+          telefono: "",
+        });
+
+        obtenerContactos();
       }
     } catch (error) {
       console.error("Error al actualizar los datos del contacto:", error);

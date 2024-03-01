@@ -54,29 +54,27 @@ const FormularioRegistro = ({
           onChange={manejarCambioInput}
         />
       </div>
-      {selectedFile ? (
+      {selectedFile && (
         <div>
           <label htmlFor="avatar" className="form-label">
             Avatar seleccionado
           </label>
           <span className="d-flex justify-content-start">
-            {status_btn ? (
+            {selectedFile !== infoContacto.avatar ? (
               <img
-                src={`${url_api}/fotos_amigos/${selectedFile}`}
+                src={URL.createObjectURL(selectedFile)}
                 alt="avatar"
                 style={{ width: "100px" }}
               />
             ) : (
               <img
-                src={URL.createObjectURL(selectedFile)}
+                src={`${url_api}/fotos_amigos/${selectedFile}`}
                 alt="avatar"
                 style={{ width: "100px" }}
               />
             )}
           </span>
         </div>
-      ) : (
-        ""
       )}
 
       <div className="mb-3 mt-4">

@@ -52,56 +52,93 @@ switch ($metodo) {
         break;
 
     case 'POST':
-        // Verificar si se ha enviado un archivo
-        if (isset($_FILES['avatar'])) {
-            $archivoTemporal = $_FILES['avatar']['tmp_name'];
-            $nombreArchivo = $_FILES['avatar']['name'];
 
-            $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
+        if (
+            isset($_POST["id"]) &&
+            ($_SERVER['REQUEST_METHOD'] == "POST")
+        ) {
+            if (isset($_FILES['avatar'])) {
+                $archivoTemporal = $_FILES['avatar']['tmp_name'];
+                $nombreArchivo = $_FILES['avatar']['name'];
 
-            if (in_array($extension, $extensionesPermitidas)) {
-                // Generar un nombre único y seguro para el archivo
-                $nombreArchivo = substr(md5(uniqid(rand())), 0, 10) . "." . $extension;
-                $rutaDestino = $dirLocal . '/' . $nombreArchivo;
+                $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
 
-                // Mover el archivo a la ubicación deseada
-                if (move_uploaded_file($archivoTemporal, $rutaDestino)) {
-                    $nombre = $_POST['nombre'];
-                    $email = $_POST['email'];
-                    $telefono = $_POST['telefono'];
-                    $query = "INSERT INTO $tbl_alumnos (nombre, email, telefono, avatar) VALUES ('$nombre', '$email', '$telefono', '$nombreArchivo')";
-                    if (mysqli_query($con, $query)) {
-                        echo json_encode(array('message' => 'Nuevo amigo creado correctamente'));
+                if (in_array($extension, $extensionesPermitidas)) {
+                    // Generar un nombre único y seguro para el archivo
+                    $nombreArchivo = substr(md5(uniqid(rand())), 0, 10) . "." . $extension;
+                    $rutaDestino = $dirLocal . '/' . $nombreArchivo;
+
+                    // Mover el archivo a la ubicación deseada
+                    if (move_uploaded_file($archivoTemporal, $rutaDestino)) {
+                        $nombre = ucwords($_POST['nombre']);
+                        $email = trim($_POST['email']);
+                        $telefono = trim($_POST['telefono']);
+                        $id = trim($_POST['id']);
+
+                        $query = "UPDATE $tbl_alumnos SET nombre='$nombre', email='$email', telefono='$telefono', avatar='$nombreArchivo' WHERE id=$id";
+                        if (mysqli_query($con, $query)) {
+                            echo json_encode(array('message' => 'Contacto actualizado correctamente'));
+                        } else {
+                            echo json_encode(array('error' => 'Error al actualizar contacto: ' . mysqli_error($con)));
+                        }
                     } else {
-                        echo json_encode(array('error' => 'Error al crear amigo: ' . mysqli_error($con)));
+                        echo json_encode(array('error' => 'Error al mover el archivo'));
                     }
                 } else {
-                    echo json_encode(array('error' => 'Error al mover el archivo'));
+                    echo json_encode(array('error' => 'Tipo de archivo no permitido'));
                 }
             } else {
-                echo json_encode(array('error' => 'Tipo de archivo no permitido'));
+                echo json_encode(array('error' => 'No se ha enviado ningún archivo o ha ocurrido un error al cargar el archivo'));
             }
         } else {
-            echo json_encode(array('error' => 'No se ha enviado ningún archivo o ha ocurrido un error al cargar el archivo'));
+            // Verificar si se ha enviado un archivo
+            if (isset($_FILES['avatar'])) {
+                $archivoTemporal = $_FILES['avatar']['tmp_name'];
+                $nombreArchivo = $_FILES['avatar']['name'];
+
+                $extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
+
+                if (in_array($extension, $extensionesPermitidas)) {
+                    // Generar un nombre único y seguro para el archivo
+                    $nombreArchivo = substr(md5(uniqid(rand())), 0, 10) . "." . $extension;
+                    $rutaDestino = $dirLocal . '/' . $nombreArchivo;
+
+                    // Mover el archivo a la ubicación deseada
+                    if (move_uploaded_file($archivoTemporal, $rutaDestino)) {
+                        $nombre = ucwords($_POST['nombre']);
+                        $email = trim($_POST['email']);
+                        $telefono = trim($_POST['telefono']);
+                        $query = "INSERT INTO $tbl_alumnos (nombre, email, telefono, avatar) VALUES ('$nombre', '$email', '$telefono', '$nombreArchivo')";
+                        if (mysqli_query($con, $query)) {
+                            echo json_encode(array('message' => 'Nuevo amigo creado correctamente'));
+                        } else {
+                            echo json_encode(array('error' => 'Error al crear amigo: ' . mysqli_error($con)));
+                        }
+                    } else {
+                        echo json_encode(array('error' => 'Error al mover el archivo'));
+                    }
+                } else {
+                    echo json_encode(array('error' => 'Tipo de archivo no permitido'));
+                }
+            } else {
+                echo json_encode(array('error' => 'No se ha enviado ningún archivo o ha ocurrido un error al cargar el archivo'));
+            }
         }
         break;
 
     case 'PUT':
         $data = json_decode(file_get_contents("php://input"), true);
-        if (isset($_FILES['avatar'])) {
-            print_r(($_FILES));
-            print_r('si ha subido un archivo');
-        }
-        print_r($_POST);
-        print_r($data);
+        $id = $data['id'];
+        $nombre = ucwords($data['nombre']);
+        $email = trim($data['email']);
+        $telefono = trim($data['telefono']);
 
-        /*
         $query = "UPDATE $tbl_alumnos SET nombre='$nombre', email='$email', telefono='$telefono' WHERE id=$id";
         if (mysqli_query($con, $query)) {
             echo json_encode(array('message' => 'Contacto actualizado correctamente'));
         } else {
             echo json_encode(array('error' => 'Error al actualizar contacto: ' . mysqli_error($con)));
-        }*/
+        }
         break;
 
     case 'DELETE':
@@ -137,3 +174,17 @@ switch ($metodo) {
 }
 
 mysqli_close($con);
+
+
+/**
+ * Nota: En el front la funcion manejarUpdateFormulario que es la que maneja los datos para actualizar el contacto,
+ * cuenta con 2 aspectos importantes:
+ * 1. Actualizan los datos del contacto y dejan la imagen misma imagen por defecto
+ * 2. Actualizan los datos del contacto y cambian la imagen o solo cambian la imagen
+ * cuando intento actualizar los datos de contacto y cambiando la imagen, envio la solicitud por el metodo put pero no funciona, 
+ * por lo que he creado un pequeño altificion para enviar la solicitud por post al backe pero con un parametro adicional el cual es el id del contacto,
+ * esto indica que se va a actualizar el contacto con ese id a pesar de que esta llegando por el metodo post.
+ * Si llega por el metodo post pero si parametro de id, solo se realiza el insert del contacto
+ * 
+ * Ahora cuando se actualiza el contacto pero sin modificar la imagen, es decir no cambia la imagen esta solicitud si la puedo enviar por el metodo put, para actualizar el contacto.
+ */
