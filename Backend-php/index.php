@@ -87,26 +87,13 @@ switch ($metodo) {
         break;
 
     case 'PUT':
-        print_r($_POST);
         $data = json_decode(file_get_contents("php://input"), true);
-        $id = $data['id'];
-        $nombre = mysqli_real_escape_string($con, $data['nombre']);
-        $email = mysqli_real_escape_string($con, $data['email']);
-        $telefono = mysqli_real_escape_string($con, $data['telefono']);
-        print('nombre: ' . $nombre . ' email: ' . $email . ' telefono: ' . $telefono);
-
-        $archivoTemporal = $_FILES['avatar']['tmp_name'];
-        $nombreArchivo = $_FILES['avatar']['name'];
-        print_r($archivoTemporal);
-        print_r($nombreArchivo);
-        echo '<br>';
-
-        $nombre = $_POST['nombre'];
-        $email = $_POST['email'];
-        $telefono = $_POST['telefono'];
-        print_r($nombre);
-        print_r($email);
-        print_r($telefono);
+        if (isset($_FILES['avatar'])) {
+            print_r(($_FILES));
+            print_r('si ha subido un archivo');
+        }
+        print_r($_POST);
+        print_r($data);
 
         /*
         $query = "UPDATE $tbl_alumnos SET nombre='$nombre', email='$email', telefono='$telefono' WHERE id=$id";

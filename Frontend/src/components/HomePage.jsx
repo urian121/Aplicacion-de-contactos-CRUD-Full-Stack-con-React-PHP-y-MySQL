@@ -49,7 +49,6 @@ const HomePage = () => {
     if (selectedFile) {
       datosConImagen.avatar = selectedFile;
     }
-
     // Console.log solo para verificar los datos en el objeto datosConImagen
     //console.log("Datos del formulario con imagen:", datosConImagen);
     if (selectedFile) {
@@ -65,11 +64,11 @@ const HomePage = () => {
         toast.success("Imagen subida correctamente");
 
         // Limpiar los campos del formulario después de enviar con éxito
-        /* setDatos({
+        setDatos({
           nombre: "",
           email: "",
           telefono: "",
-        });*/
+        });
 
         obtenerContactos();
       } catch (error) {
@@ -146,46 +145,43 @@ const HomePage = () => {
    */
   const manejarUpdateFormulario = async (e) => {
     e.preventDefault();
+
+    /**
+     * Nota:Cuando se decide actual un contacto, suceden 2 casos:
+     * 1. Actualizan los datos del contacto y dejan la imagen misma imagen por defecto
+     * 2. Actualizan los datos del contacto y cambian la imagen o solo cambian la imagen
+     * Por lo tanto, se debe verificar si la imagen es la misma o no, para actualizarla en la base de datos
+     */
     // console.log("Recibiendo datos para actualizar el contacto", datos);
-    console.log(datos);
-    console.log(selectedFile);
-
+    const informData = { ...datos };
+    let avatarBD = datos.avatar;
+    console.log(informData);
     try {
-      /*  const formData = new FormData(); // Objeto FormData para enviar datos y archivos
-
-      formData.append("id", datos.id);
-      formData.append("nombre", datos.nombre);
-      formData.append("email", datos.email);
-      formData.append("telefono", datos.telefono);
-      formData.append("avatar", datos.avatar);
-      */
-
-      const informData = { ...datos };
-      //Imagen default de la base de datos
-      let avatarBD = datos.avatar;
       if (avatarBD == selectedFile) {
+        // La imagen es la misma que la imagen por defecto, por lo que no se actualiza
         delete datos.avatar;
-        console.log("no se actualiza la imagen");
+        console.log("caso 1", datos);
+
+        const response = await axios.put(`${URL_API}${datos.id}`, datos);
+        console.log("Respuesta del servidor:", response.data);
       } else {
-        informData.avatar = selectedFile;
-        console.log("se actualiza la imagen");
+        // La imagen es diferente que la imagen por defecto, por lo que se actualiza
+        // La imagen ha sido cambiada, actualizarla
+        const formData = new FormData();
+        formData.append("id", datos.id);
+        formData.append("nombre", datos.nombre);
+        formData.append("email", datos.email);
+        formData.append("telefono", datos.telefono);
+        formData.append("avatar", selectedFile);
+
+        // console.log("caso 2", formData);
+        const response = await axios.put(`${URL_API}${datos.id}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Respuesta del servidor:", response.data);
       }
-
-      console.log(informData);
-      // Realizar la solicitud PUT al backend con FormData
-      /*
-      const response = await axios.put(`${URL_API}${datos.id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("Respuesta de la API:", response.data);
-      toast.success("Contacto actualizado correctamente.");
-
-      obtenerContactos();
-      setEditarContacto(false);
-      */
     } catch (error) {
       console.error("Error al actualizar los datos del contacto:", error);
     }

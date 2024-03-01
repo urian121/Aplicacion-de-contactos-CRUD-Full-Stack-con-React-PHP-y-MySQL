@@ -1,0 +1,37 @@
+const manejarUpdateFormulario = async (e) => {
+  e.preventDefault();
+
+  const formData = new FormData();
+  formData.append('nombre', datos.nombre);
+  formData.append('email', datos.email);
+  formData.append('telefono', datos.telefono);
+
+  // Agregar la imagen al FormData si ha sido seleccionada
+  if (selectedFile) {
+    formData.append('avatar', selectedFile);
+  }
+
+  try {
+    const response = await axios.put(`${URL_API}${datos.id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    console.log('Respuesta del servidor:', response.data);
+    setSelectedFile(null);
+    toast.success('Contacto actualizado correctamente');
+
+    // Limpiar los campos del formulario después de enviar con éxito
+    setDatos({
+      nombre: '',
+      email: '',
+      telefono: ''
+    });
+
+    obtenerContactos();
+    setEditarContacto(false);
+  } catch (error) {
+    console.error('Error al actualizar los datos del contacto:', error);
+  }
+};
