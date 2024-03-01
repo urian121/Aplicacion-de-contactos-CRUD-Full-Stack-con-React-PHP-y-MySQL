@@ -1,3 +1,4 @@
+import { useState } from "react";
 import PropTypes from "prop-types";
 import "../assets/styles/lista_amigos.css";
 
@@ -7,8 +8,17 @@ function ListaAmigos({
   eliminarContacto,
   obtenerContactoParaEditar,
 }) {
+  // Estado para almacenar el valor del campo de búsqueda
+  const [busqueda, setBusqueda] = useState("");
+
   // Verifica si data es null o undefined antes de usarla
   if (!data) return null;
+
+  // Filtrar la lista de amigos según el texto de búsqueda
+  const amigosFiltrados = data.filter((amigo) =>
+    amigo.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <>
       <section className="media-list">
@@ -16,9 +26,12 @@ function ListaAmigos({
           type="search"
           placeholder="Buscar amigo 😉"
           id="buscador_amigo"
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
         />
         <ul>
-          {data.map((amigo) => (
+          {/* Renderizar amigos filtrados */}
+          {amigosFiltrados.map((amigo) => (
             <li key={amigo.id} className="lista_amigo">
               <div className="media">
                 <span href="#" className="media__img">
@@ -29,9 +42,8 @@ function ListaAmigos({
                 </span>
                 <p className="media__body flex">
                   {amigo.nombre}
-                  <span className="opacity">Télefono: {amigo.telefono}</span>
+                  <span className="opacity">Teléfono: {amigo.telefono}</span>
                 </p>
-
                 <p>
                   <span> {amigo.email}</span>
                   <span style={{ float: "right" }}>

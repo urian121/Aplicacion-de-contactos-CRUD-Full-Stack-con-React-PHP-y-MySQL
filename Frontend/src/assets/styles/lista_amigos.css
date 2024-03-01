@@ -54,11 +54,10 @@ ul {
 }
 
 #buscador_amigo {
-  background-color: #e5e5e5;
+  background-color: #a6a6a6;
   background-size: 24px;
   width: 100%;
   border: transparent;
-  border-bottom: solid 1px #ccc;
   padding: 10px 10px 10px 30px;
   outline: none;
 }

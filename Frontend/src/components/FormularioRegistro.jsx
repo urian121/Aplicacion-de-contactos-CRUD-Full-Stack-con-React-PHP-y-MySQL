@@ -45,7 +45,7 @@ const FormularioRegistro = ({
         />
       </div>
       <div className="mb-3">
-        <label className="form-label">Télefono</label>
+        <label className="form-label">Teléfono</label>
         <input
           type="number"
           name="telefono"
