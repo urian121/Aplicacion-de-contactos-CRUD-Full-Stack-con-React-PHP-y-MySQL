@@ -9,8 +9,11 @@ import FormularioRegistro from "./FormularioRegistro";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const URL_API =
-  "http://localhost/crud-full-stack-agenda-de-contactos-con-react-php-mysql/Backend-php/";
+//Url de la API backend en la nube
+const URL_API = "http://webdeveloperurianviera.rf.gd/apis/agenda-contactos/";
+
+// Url  de la API de PHP local desde la carpeta Backend-php
+//const URL_API ="http://localhost/crud-full-stack-agenda-de-contactos-con-react-php-mysql/Backend-php/";
 
 const HomePage = () => {
   const [amigos, setAmigos] = useState([]);
