@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import "../assets/styles/lista_amigos.css";
 
-function ListaAmigos({
+function ListaContactos({
   data,
   url_api,
   eliminarContacto,
@@ -70,11 +70,11 @@ function ListaAmigos({
 }
 
 // Define la validación de tipo para la prop 'data'
-ListaAmigos.propTypes = {
+ListaContactos.propTypes = {
   obtenerContactoParaEditar: PropTypes.func,
   eliminarContacto: PropTypes.func,
   url_api: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object), // 'data' debe ser un array de objetos
 };
 
-export default ListaAmigos;
+export default ListaContactos;

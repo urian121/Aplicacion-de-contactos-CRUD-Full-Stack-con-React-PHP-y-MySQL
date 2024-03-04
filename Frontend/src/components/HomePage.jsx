@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import ListaAmigos from "./ListaAmigos";
+import ListaContactos from "./ListaContactos";
 import Titulo from "./Titulo";
 import FormularioRegistro from "./FormularioRegistro";
 
@@ -61,7 +61,7 @@ const HomePage = () => {
 
         console.log("Respuesta del servidor:", response.data);
         setSelectedFile(null);
-        toast.success("Imagen subida correctamente");
+        toast.success("Contacto agregado correctamente");
 
         // Limpiar los campos del formulario después de enviar con éxito
         setDatos({
@@ -72,7 +72,7 @@ const HomePage = () => {
 
         obtenerContactos();
       } catch (error) {
-        console.error("Error al agregar alumno:", error);
+        console.error("Error al agregar contacto:", error);
       }
     } else {
       console.log("No se ha seleccionado ningún archivo.");
@@ -81,7 +81,7 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    // Obtener lista de alumnos al cargar la página
+    // Obtener lista de contactos al cargar la página
     obtenerContactos();
   }, []);
 
@@ -216,12 +216,16 @@ const HomePage = () => {
       <Titulo />
       <ToastContainer />
       <div className="col-md-7">
-        <ListaAmigos
-          data={amigos}
-          url_api={URL_API}
-          eliminarContacto={eliminarContacto}
-          obtenerContactoParaEditar={obtenerContactoParaEditar}
-        />
+        {amigos.length === 0 ? (
+          <p>Cargando amigos...</p>
+        ) : (
+          <ListaContactos
+            data={amigos}
+            url_api={URL_API}
+            eliminarContacto={eliminarContacto}
+            obtenerContactoParaEditar={obtenerContactoParaEditar}
+          />
+        )}
       </div>
 
       <div className="col-md-5">
