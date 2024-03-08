@@ -200,7 +200,6 @@ const HomePage = () => {
   };
 
   const volverHome = () => {
-    console.log("culoooo");
     console.log(editarContacto);
     setEditarContacto(false);
     setSelectedFile(null);
