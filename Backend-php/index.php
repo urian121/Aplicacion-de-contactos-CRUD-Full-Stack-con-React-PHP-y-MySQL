@@ -1,8 +1,8 @@
 <?php
-
+/*
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
+*/
 
 /**
  * Creando una API RESTful con los métodos GET, POST, PUT y DELETE utilizando PHP y MySQLi
@@ -182,7 +182,7 @@ mysqli_close($con);
  * 1. Actualizan los datos del contacto y dejan la imagen misma imagen por defecto
  * 2. Actualizan los datos del contacto y cambian la imagen o solo cambian la imagen
  * cuando intento actualizar los datos de contacto y cambiando la imagen, envio la solicitud por el metodo put pero no funciona, 
- * por lo que he creado un pequeño altificion para enviar la solicitud por post al backe pero con un parametro adicional el cual es el id del contacto,
+ * por lo que he creado un pequeño altificion para enviar la solicitud por post al backend pero con un parametro adicional el cual es el id del contacto,
  * esto indica que se va a actualizar el contacto con ese id a pesar de que esta llegando por el metodo post.
  * Si llega por el metodo post pero si parametro de id, solo se realiza el insert del contacto
  * 
